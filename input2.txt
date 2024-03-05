@@ -1,0 +1,6 @@
+flag2.ppm
+flags.ppm
+flag.ppm
+soldiers.ppm
+50
+yes

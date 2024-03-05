@@ -1,0 +1,4 @@
+flag.ppm
+soldiers.ppm
+60
+no
