@@ -10,18 +10,20 @@ from pbmimage import PBMimage
 MAX_PIXEL_VALUE = 255
 def main():
     
-    # image1 = PBMimage('', '', -1, -1, -1, [])
-    # image2 = PBMimage('', '', -1, -1, -1, [])
+    image1 = PBMimage('', '', -1, -1, -1, [])
+    image2 = PBMimage('', '', -1, -1, -1, [])
     
     # # Ask the user for the 2 image filenames
-    # file1 = input("Enter input filename for image 1: ")
+    file1 = input("Enter input filename for image 1: ")
+    image1.load_image(file1)
     
     
-    # file2 = input("Enter input filename for image 2: ")
+    file2 = input("Enter input filename for image 2: ")
+    image2.load_image(file2)
     
     
     
-    blended = blending_images(file1, file2)
+    blended = blending_images(image1, image2)
     
     
     convert_to_bw = input("Convert the image to greyscale? (Enter 'yes' or 'no'): ")
@@ -31,14 +33,29 @@ def main():
         convert_to_bw = input("Convert the image to greyscale? (Enter 'yes' or 'no'): ").lower()
         return
 
-    converted_image = convert_to_BW(blended) if convert_to_bw == 'yes' else blended
+    if convert_to_bw == 'yes':
+        converted_image = convert_to_BW(blended)
+        converted_image.output_image('imageBW.pgm')
+        print("Output file for blended image: imageBW.pgm")
+        print(converted_image.comment)
+        print(f"Type: {converted_image.ASCI}")
+        print(f"Width: {converted_image.width} Height: {converted_image.height}")
+    else:
+        converted_image = blended
+        converted_image.output_image('imageBlend.ppm')
+        print("Output file for blended image: imageBlend.ppm")
+        print(converted_image.comment)
+        print(f"Type: {converted_image.ASCI}")
+        print(f"Width: {converted_image.width} Height: {converted_image.height}")
+
+    # converted_image = convert_to_BW(blended) if convert_to_bw == 'yes' else blended
     
-    converted_image.output_image('imageBlend.ppm')
+    # converted_image.output_image('imageBlend.ppm')
     
-    print("Output file for blended image: imageBlend.ppm")
-    print(converted_image.comment)
-    print(f"Type: {converted_image.ASCI}")
-    print(f"Width: {converted_image.width} Height: {converted_image.height}")
+    # print("Output file for blended image: imageBlend.ppm")
+    # print(converted_image.comment)
+    # print(f"Type: {converted_image.ASCI}")
+    # print(f"Width: {converted_image.width} Height: {converted_image.height}")
     
     
     

@@ -8,6 +8,8 @@
 # program should contain the code to instantiate the PBMimage objects and ask the user for the 2 image
 # filenames used to create the blended image.
 
+import sys
+
 class PBMimage:
     
     # Constructor
@@ -80,40 +82,47 @@ class PBMimage:
     # from being thrown. 
     # Method to read the PBM image file
     def load_image(self, fileName):
-        try:
-            with open(fileName, 'r') as file:
-                # Temporary storage for the first four lines
-                headLines = [file.readline().strip() for _ in range(4)]
-                
-                # Initialize variables for the header information
-                self.comment = None
-                size_detected = False
+        while True:
+            try:
+                with open(fileName, 'r') as file:
+                    # Temporary storage for the first four lines
+                    headLines = [file.readline().strip() for _ in range(4)]
+                    
+                    # Initialize variables for the header information
+                    self.comment = None
+                    size_detected = False
 
-                for line in headLines:
-                    if line.startswith('#'):
-                        self.comment = line  # Comment line
-                    elif line.startswith('P'):
-                        self.magic_number = line  # Magic number (P3 for color images)
-                    elif ' ' in line and not size_detected:  # Detects size line, ensures it's only done once
-                        size = line.split()
-                        self.width, self.height = int(size[0]), int(size[1])
-                        size_detected = True
-                    else:
-                        # print(line)
-                        self.maxColor = int(line)
-                        
+                    for line in headLines:
+                        if line.startswith('#'):
+                            self.comment = line  # Comment line
+                        elif line.startswith('P'):
+                            self.magic_number = line  # Magic number (P3 for color images)
+                            if self.magic_number != 'P3':
+                                print("This file is not in PPM P3 format.")
+                                sys.exit("Execution terminated.")
+                        elif ' ' in line and not size_detected:  # Detects size line, ensures it's only done once
+                            size = line.split()
+                            self.width, self.height = int(size[0]), int(size[1])
+                            size_detected = True
+                        else:
+                            # print(line)
+                            self.maxColor = int(line)
+                            
 
-                # Ensuring we have read the magic number and dimensions
-                if not self.magic_number or not size_detected:
-                    raise ValueError("Invalid PBM file format.")
+                    # Ensuring we have read the magic number and dimensions
+                    if not self.magic_number or not size_detected:
+                        raise ValueError("Invalid PBM file format.")
 
-                # Reading pixel data
-                pixels_data = file.read().split()
-                self.pixels = [int(pixel) for pixel in pixels_data]
-                
-        except FileNotFoundError:
-            print(f"[Errno 2] No such file or directory: {fileName}")
-    
+                    # Reading pixel data
+                    pixels_data = file.read().split()
+                    self.pixels = [int(pixel) for pixel in pixels_data]
+                    
+                    break
+                    
+            except FileNotFoundError:
+                print(f"[Errno 2] No such file or directory: '{fileName}'")
+                fileName = input("Enter input filename again: ")
+        
     # An output_image method that is passed the name of the file into which the image data should be
     # dumped. This method should open the file, write the image data to the file, and close the file. Based on
     # the image type, it should accommodate both P2 and P3 image types.
